@@ -1,0 +1,26 @@
+{
+  "name": "monaco-editor-with-textmate",
+  "version": "1.0.0",
+  "description": "use monaco-editor with textmate",
+  "main": "lib/index.js",
+  "module": "lib/index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "vite dev"
+  },
+  "author": "Ming Wei <w183279041@gmail.com>",
+  "license": "MIT",
+  "files": [
+    "lib",
+    "static"
+  ],
+  "dependencies": {
+    "onigasm": "2.2.5",
+    "vscode-textmate": "7.0.1"
+  },
+  "devDependencies": {
+    "monaco-editor": "0.36.1",
+    "typescript": "^4.9.5",
+    "vite": "4.2.0"
+  }
+}
