@@ -1,6 +1,6 @@
 {
   "name": "monaco-editor-with-textmate",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "use monaco-editor with textmate",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
