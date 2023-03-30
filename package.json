@@ -1,6 +1,6 @@
 {
   "name": "monaco-editor-with-textmate",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "use monaco-editor with textmate",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -9,7 +9,7 @@
   "scripts": {
     "build": "rollup --config rollup.config.js",
     "dev": "vite dev",
-    "pub":"npm run build && npm version patch && npm publish"
+    "pub": "npm run build && npm version patch && npm publish"
   },
   "author": "Ming Wei <w183279041@gmail.com>",
   "license": "MIT",
