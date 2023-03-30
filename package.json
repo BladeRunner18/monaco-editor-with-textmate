@@ -1,6 +1,6 @@
 {
   "name": "monaco-editor-with-textmate",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "use monaco-editor with textmate",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -24,7 +24,7 @@
   "bugs": "https://github.com/BladeRunner18/monaco-editor-with-textmate/issues",
   "dependencies": {
     "vscode-textmate": "7.0.1",
-    "vscode-oniguruma":"1.7.0"
+    "vscode-oniguruma": "1.7.0"
   },
   "devDependencies": {
     "monaco-editor": "0.36.1",
