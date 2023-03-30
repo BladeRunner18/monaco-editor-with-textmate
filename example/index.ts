@@ -1,4 +1,4 @@
-import MonacoService from 'monaco-editor-with-textmate';
+import MonacoProvider from 'monaco-editor-with-textmate';
 
 const value = `
 import { useState } from 'react'
@@ -39,16 +39,21 @@ export default App
 
 `;
 
-const instance = new MonacoService();
+const instance = new MonacoProvider();
 
 await instance.loadMonaco({
   language: 'typescript',
   value,
 });
 
+// get editor instance
 const editor = instance.getEditor();
 
+// get monaco instance
 const monaco = instance.getMonaco();
 
-document.getElementById('container')?.appendChild(instance.getEditorElement());
+// get editor element
+const element = instance.getEditorElement();
 
+// render to html
+document.getElementById('container')?.appendChild(element);
