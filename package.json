@@ -8,7 +8,8 @@
   "type": "module",
   "scripts": {
     "build": "rollup --config rollup.config.js",
-    "dev": "vite dev"
+    "dev": "vite dev",
+    "pub":"npm run build && npm version patch && npm publish"
   },
   "author": "Ming Wei <w183279041@gmail.com>",
   "license": "MIT",
