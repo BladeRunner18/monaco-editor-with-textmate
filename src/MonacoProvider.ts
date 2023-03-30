@@ -1,7 +1,7 @@
 import LanguageProvider from './LanguageProvider';
 import Workbench from './Workbench';
 import ThemeProvider from './ThemeProvider';
-import type { monaco, M } from '@/types';
+import type { monaco, M, MonacoProviderOptions } from '@/types';
 
 // default opts
 const opts: monaco.editor.IStandaloneEditorConstructionOptions = {
@@ -16,16 +16,13 @@ const opts: monaco.editor.IStandaloneEditorConstructionOptions = {
   },
 };
 
-interface Options {
-  vs: string;
-  removePresetLanguageConfig: boolean;
-  theme: string;
-}
-
-const defaultOptions: Options = {
+const defaultOptions: MonacoProviderOptions = {
   vs: 'https://unpkg.com/monaco-editor@0.36.1/min/vs',
   removePresetLanguageConfig: true,
   theme: 'dracula',
+  wasm: 'https://unpkg.com/vscode-oniguruma@1.7.0/release/onig.wasm',
+  grammars: {} as any,
+  themes: {},
 };
 
 class MonacoService {
@@ -35,15 +32,15 @@ class MonacoService {
   private languageProvider!: LanguageProvider;
   private workbench!: Workbench;
   private themeProvider!: ThemeProvider;
-  private options: Options;
+  private options: MonacoProviderOptions;
   private observers = new ResizeObserver(([elm]) => {
     this.editor?.layout();
   });
 
-  constructor(opts: Partial<Options> = {}) {
+  constructor(opts?: Partial<MonacoProviderOptions>) {
     this.options = {
       ...defaultOptions,
-      ...opts,
+      ...(opts || {}),
     };
     this.createElement();
   }
@@ -101,7 +98,7 @@ class MonacoService {
     this.setTypescriptConfig();
 
     // language service
-    this.languageProvider = new LanguageProvider({ monaco });
+    this.languageProvider = new LanguageProvider({ monaco, wasm: this.options.wasm });
     await this.languageProvider.loadRegistry();
 
     // theme service
@@ -139,8 +136,6 @@ class MonacoService {
     });
   }
 
-  // monaco-editor use Monarch, we change it to Textmate
-  // then we do not need the perset configuration
   public removePresetLanguageProvider() {
     const languages = ['javascript', 'typescript', 'html', 'css', 'json'];
     for (const languageId of languages) {

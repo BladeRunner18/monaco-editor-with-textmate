@@ -1,6 +1,6 @@
 {
   "name": "monaco-editor-with-textmate",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "use monaco-editor with textmate",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -17,9 +17,14 @@
     "dist",
     "static"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BladeRunner18/monaco-editor-with-textmate"
+  },
+  "bugs": "https://github.com/BladeRunner18/monaco-editor-with-textmate/issues",
   "dependencies": {
-    "onigasm": "2.2.5",
-    "vscode-textmate": "7.0.1"
+    "vscode-textmate": "7.0.1",
+    "vscode-oniguruma":"1.7.0"
   },
   "devDependencies": {
     "monaco-editor": "0.36.1",
@@ -27,10 +32,14 @@
     "vite": "4.2.0",
     "@babel/preset-typescript": "7.21.0",
     "@babel/core": "7.21.3",
+    "@babel/preset-env": "7.20.2",
     "@rollup/plugin-babel": "6.0.3",
     "rollup-plugin-clear": "2.0.7",
     "rollup-plugin-dts": "5.3.0",
     "@rollup/plugin-node-resolve": "15.0.1",
     "@rollup/plugin-alias": "4.0.3"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
   }
 }

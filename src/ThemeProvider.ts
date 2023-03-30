@@ -1,22 +1,28 @@
 import { Registry } from 'vscode-textmate';
 import { M } from '@/types';
 import { PresetThemes } from './constant';
+import { ITheme } from '@/types';
 import http from './util/http';
 
 interface Cfg {
   registry: Registry;
   monaco: M;
+  themes?: ITheme;
 }
 
 class ThemeProvider {
   private themes = new Map<string, any>();
-  private themeMeta = PresetThemes;
+  private themeMeta;
   private registry: Registry;
   private monaco: M;
 
   constructor(cfg: Cfg) {
     this.registry = cfg.registry;
     this.monaco = cfg.monaco;
+    this.themeMeta = {
+      ...PresetThemes,
+      ...cfg.themes,
+    };
   }
 
   public async setTheme(id: string) {

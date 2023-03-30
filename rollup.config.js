@@ -37,7 +37,7 @@ export default [
         extensions: ['.js', '.ts', '.mjs'],
       }),
     ],
-    external: ['monaco-editor', 'onigasm', 'vscode-textmate'],
+    external: ['monaco-editor', 'onigasm', 'vscode-textmate', 'vscode-oniguruma'],
   },
   {
     input: 'src/index.ts',

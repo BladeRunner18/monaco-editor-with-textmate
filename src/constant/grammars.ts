@@ -1,9 +1,4 @@
-interface IGrammar {
-  scopeName: string;
-  tm: string;
-  cfg?: string;
-  extra?: any;
-}
+import { IGrammar } from '@/types';
 
 const base = `https://unpkg.com/monaco-editor-with-textmate@1.0.0/static/`;
 

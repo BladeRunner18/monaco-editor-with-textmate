@@ -39,7 +39,8 @@ export default App
 
 `;
 
-const instance = new MonacoProvider();
+const instance = new MonacoProvider({
+});
 
 await instance.loadMonaco({
   language: 'typescript',

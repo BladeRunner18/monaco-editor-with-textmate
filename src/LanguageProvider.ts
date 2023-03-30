@@ -1,12 +1,16 @@
 import { INITIAL, Registry, parseRawGrammar, StackElement } from 'vscode-textmate';
-import { loadWASM, OnigScanner, OnigString } from 'onigasm';
+// import { loadWASM, OnigScanner, OnigString } from 'onigasm';
+import { createOnigScanner, createOnigString, loadWASM } from 'vscode-oniguruma';
 import { PresetGrammars } from './constant';
+import { IGrammar } from '@/types';
 import http from './util/http';
 
 import { M, monaco } from '@/types';
 
 interface Cfg {
   monaco: M;
+  wasm: string;
+  grammars?: Record<string, IGrammar>;
 }
 
 let isLoadedWASM = false;
@@ -18,12 +22,18 @@ export type LanguageInfo = {
 
 class LanguageProvider {
   private monaco: M;
+  private wasm: string;
   private registry!: Registry;
-  private grammars = PresetGrammars;
+  private grammars: Record<string, IGrammar>;
   private disposes: monaco.IDisposable[] = [];
 
   constructor(cfg: Cfg) {
     this.monaco = cfg.monaco;
+    this.wasm = cfg.wasm;
+    this.grammars = {
+      ...PresetGrammars,
+      ...cfg.grammars,
+    };
   }
 
   public getRegistry() {
@@ -45,17 +55,19 @@ class LanguageProvider {
 
   public async loadRegistry() {
     if (!isLoadedWASM) {
-      await loadWASM(`https://unpkg.com/onigasm@2.2.5/lib/onigasm.wasm`);
+      await loadWASM(await this.loadVSCodeOnigurumWASM());
       isLoadedWASM = true;
     }
     const registry = new Registry({
       onigLib: Promise.resolve({
-        createOnigScanner: (patterns: any) => {
-          return new OnigScanner(patterns);
-        },
-        createOnigString: (s: any) => {
-          return new OnigString(s);
-        },
+        createOnigScanner,
+        createOnigString,
+        // createOnigScanner: (patterns: any) => {
+        //   return new OnigScanner(patterns);
+        // },
+        // createOnigString: (s: any) => {
+        //   return new OnigString(s);
+        // },
       }),
       loadGrammar: async (scopeName) => {
         const key = Object.keys(this.grammars).find((k) => this.grammars[k].scopeName === scopeName);
@@ -131,6 +143,18 @@ class LanguageProvider {
       }
     }
     throw new Error(`can not find scopeName with languageId: ${languageId}`);
+  }
+
+  public async loadVSCodeOnigurumWASM() {
+    const response = await fetch(this.wasm);
+    const contentType = response.headers.get('content-type');
+    if (contentType === 'application/wasm') {
+      return response;
+    }
+    // Using the response directly only works if the server sets the MIME type 'application/wasm'.
+    // Otherwise, a TypeError is thrown when using the streaming compiler.
+    // We therefore use the non-streaming compiler :(.
+    return await response.arrayBuffer();
   }
 
   public dispose() {
