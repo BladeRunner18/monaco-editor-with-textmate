@@ -4,7 +4,9 @@ This gets TextMate grammars working in standalone Monaco by leveraging `vscode-o
 
 ## Install
 
+```bash
 yarn add monaco-editor-with-textmate
+```
 
 ## Usage
 
@@ -33,4 +35,4 @@ document.getElementById('container')?.appendChild(element);
 
 ## Documents
 
-read the type definition from index.d.ts;
+read the type definition from [index.d.ts](https://github.com/BladeRunner18/monaco-editor-with-textmate/blob/master/src/types/index.d.ts);
