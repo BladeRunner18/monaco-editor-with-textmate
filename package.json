@@ -1,10 +1,10 @@
 {
   "name": "monaco-editor-with-textmate",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "use monaco-editor with textmate",
-  "main": "dist/cjs/index.js",
-  "module": "dist/esm/index.js",
-  "types": "dist/index.d.ts",
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "types": "es/index.d.ts",
   "type": "module",
   "scripts": {
     "build": "rollup --config rollup.config.js",
