@@ -1,16 +1,14 @@
 import { INITIAL, Registry, parseRawGrammar, StackElement } from 'vscode-textmate';
-// import { loadWASM, OnigScanner, OnigString } from 'onigasm';
 import { createOnigScanner, createOnigString, loadWASM } from 'vscode-oniguruma';
-import { PresetGrammars } from './constant';
-import { IGrammar } from '@/types';
-import http from './util/http';
+import { Grammars } from '@/types';
+import http from '../util/http';
 
 import { M, monaco } from '@/types';
 
 interface Cfg {
   monaco: M;
   wasm: string;
-  grammars?: Record<string, IGrammar>;
+  grammars: Grammars;
 }
 
 let isLoadedWASM = false;
@@ -24,16 +22,13 @@ class LanguageProvider {
   private monaco: M;
   private wasm: string;
   private registry!: Registry;
-  private grammars: Record<string, IGrammar>;
+  private grammars: Grammars;
   private disposes: monaco.IDisposable[] = [];
 
   constructor(cfg: Cfg) {
     this.monaco = cfg.monaco;
     this.wasm = cfg.wasm;
-    this.grammars = {
-      ...PresetGrammars,
-      ...cfg.grammars,
-    };
+    this.grammars = cfg.grammars;
   }
 
   public getRegistry() {
@@ -62,12 +57,6 @@ class LanguageProvider {
       onigLib: Promise.resolve({
         createOnigScanner,
         createOnigString,
-        // createOnigScanner: (patterns: any) => {
-        //   return new OnigScanner(patterns);
-        // },
-        // createOnigString: (s: any) => {
-        //   return new OnigString(s);
-        // },
       }),
       loadGrammar: async (scopeName) => {
         const key = Object.keys(this.grammars).find((k) => this.grammars[k].scopeName === scopeName);
@@ -88,7 +77,7 @@ class LanguageProvider {
 
   public async registerLanguage(languageId: string) {
     const { tokensProvider, configuration } = await this.fetchLanguageInfo(languageId);
-
+    
     if (configuration !== null) {
       this.monaco.languages.setLanguageConfiguration(languageId, configuration);
     }

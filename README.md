@@ -10,27 +10,28 @@ yarn add monaco-editor-with-textmate
 
 ## Usage
 
-```js
-import MonacoProvider from 'monaco-editor-with-textmate';
+```tsx
+import { create, Editor } from 'monaco-editor-with-textmate';
 
-const instance = new MonacoProvider();
-
-await instance.loadMonaco({
-  language: 'typescript',
-  value: 'export default {}',
+// create editor
+const editor = await create(document.getElementById('container'), {
+  value: '{}',
+  language: 'json',
 });
 
-// get editor instance
-const editor = instance.getEditor();
-
-// get monaco instance
-const monaco = instance.getMonaco();
-
-// get editor element
-const element = instance.getEditorElement();
-
-// render to html
-document.getElementById('container')?.appendChild(element);
+//react
+export default () => {
+  return (
+    <Editor
+      onChange={(v) => {
+        console.log(v);
+      }}
+      options={{ language: 'javascript' }}
+      value={value}
+      height="500px"
+    />
+  );
+};
 ```
 
 ## Documents

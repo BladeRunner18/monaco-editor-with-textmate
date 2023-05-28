@@ -1,13 +1,12 @@
 import { Registry } from 'vscode-textmate';
 import { M } from '@/types';
-import { PresetThemes } from './constant';
-import { ITheme } from '@/types';
-import http from './util/http';
+import { Themes } from '@/types';
+import http from '@/util/http';
 
 interface Cfg {
   registry: Registry;
   monaco: M;
-  themes?: ITheme;
+  themes: Themes;
 }
 
 class ThemeProvider {
@@ -15,21 +14,30 @@ class ThemeProvider {
   private themeMeta;
   private registry: Registry;
   private monaco: M;
+  private currentTheme = '';
 
   constructor(cfg: Cfg) {
     this.registry = cfg.registry;
     this.monaco = cfg.monaco;
-    this.themeMeta = {
-      ...PresetThemes,
-      ...cfg.themes,
-    };
+    this.themeMeta = cfg.themes;
   }
 
-  public async setTheme(id: string) {
+  public async setTheme(id?: string) {
+    if (!id) return;
+    if (this.themes.has(id)) {
+      this.setEditorTheme(id);
+      return;
+    }
     const theme = await this.loadTheme(id);
     this.registry.setTheme(theme);
     this.monaco.editor.setTheme(id);
     this.injectCSS();
+  }
+
+  public setEditorTheme(id: string) {
+    if (this.currentTheme !== id) {
+      this.monaco.editor.setTheme(id);
+    }
   }
 
   public async loadTheme(id: string) {

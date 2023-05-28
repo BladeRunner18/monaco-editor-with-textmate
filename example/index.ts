@@ -1,4 +1,7 @@
-import MonacoProvider from 'monaco-editor-with-textmate';
+import { loadMonaco, create } from 'monaco-editor-with-textmate';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './Editor';
 
 const value = `
 import { useState } from 'react'
@@ -39,22 +42,16 @@ export default App
 
 `;
 
-const instance = new MonacoProvider({
-});
+// const div = document.createElement('div');
 
-await instance.loadMonaco({
-  language: 'typescript',
-  value,
-});
+// div.style.width = '100%';
+// div.style.height = '500px';
 
-// get editor instance
-const editor = instance.getEditor();
+// document.body.append(div);
 
-// get monaco instance
-const monaco = instance.getMonaco();
+// const editor = await create(div, {
+//   value,
+//   language: 'typescript',
+// });
 
-// get editor element
-const element = instance.getEditorElement();
-
-// render to html
-document.getElementById('container')?.appendChild(element);
+ReactDOM.render(React.createElement(App, { value }), document.getElementById('container'));

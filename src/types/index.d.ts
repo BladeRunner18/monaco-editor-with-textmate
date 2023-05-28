@@ -1,8 +1,10 @@
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 
+// declare const monaco: monaco;
+
 export type M = typeof monaco;
 
-export interface MonacoProviderOptions {
+export interface ProviderConfig {
   /**
    * set the monaco-editor loader path
    * @default https://unpkg.com/monaco-editor@0.36.1/min/vs
@@ -33,15 +35,19 @@ export interface MonacoProviderOptions {
   /**
    * set grammars config
    */
-  grammars: IGrammar;
+  grammars: Grammars;
 
   /**
    * set theme config
    */
   themes: ITheme;
+
+  useTextmate: boolean;
 }
 
-export interface IGrammar {
+export type Grammars = Record<string, GrammarItem>;
+
+export interface GrammarItem {
   /**
    * textmate scopeName
    */
@@ -67,6 +73,6 @@ export interface IGrammar {
   extra?: monaco.languages.ILanguageExtensionPoint;
 }
 
-export type ITheme = Record<string, string>;
+export type Themes = Record<string, string>;
 
 export { monaco };

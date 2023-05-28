@@ -1,3 +1,5 @@
-import MonacoProvider from './MonacoProvider';
+import { create, loadMonaco } from './monaco';
+import { setConfig } from '@/config';
+import Editor from './Editor';
 
-export default MonacoProvider;
+export { setConfig, create, loadMonaco, Editor };
