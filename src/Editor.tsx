@@ -16,6 +16,7 @@ const Editor: React.FC<Props> = (props) => {
   const container = useRef<HTMLDivElement>(null);
   const subscription = useRef<monaco.IDisposable | null>(null);
   const editor = useRef<monaco.editor.IStandaloneCodeEditor>();
+  const valueRef = useRef<string | undefined>('');
 
   useEffect(() => {
     create(container.current!, {
@@ -26,6 +27,10 @@ const Editor: React.FC<Props> = (props) => {
       subscription.current = e.onDidChangeModelContent((event) => {
         onChange?.(e.getValue(), event);
       });
+      if (valueRef.current !== value) {
+        const model = e.getModel();
+        model?.setValue(value || '');
+      }
       setLoading(false);
     });
 
@@ -46,6 +51,7 @@ const Editor: React.FC<Props> = (props) => {
       const model = editor.current.getModel();
       model?.setValue(value || '');
     }
+    valueRef.current = value;
   }, [value]);
 
   return (
