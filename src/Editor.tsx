@@ -29,7 +29,7 @@ const Editor: React.FC<Props> = (props) => {
       });
       if (valueRef.current !== value) {
         const model = e.getModel();
-        model?.setValue(value || '');
+        model?.setValue(valueRef.current || '');
       }
       setLoading(false);
     });
