@@ -8,10 +8,15 @@ interface Props {
   width?: string;
   height?: string;
   onChange?: (value: string, event: monaco.editor.IModelContentChangedEvent) => void;
+  editor?: React.MutableRefObject<monaco.editor.IStandaloneCodeEditor | undefined>;
 }
 
-const Editor: React.FC<Props> = (props) => {
-  const { options, width, height, onChange, value } = props;
+interface Other {
+  useEditor?: () => [React.MutableRefObject<monaco.editor.IStandaloneCodeEditor | undefined>];
+}
+
+const Editor: React.FC<Props> & Other = (props) => {
+  const { options, width, height, onChange, value, editor: outerEditor } = props;
   const [loading, setLoading] = useState(true);
   const container = useRef<HTMLDivElement>(null);
   const subscription = useRef<monaco.IDisposable | null>(null);
@@ -30,6 +35,9 @@ const Editor: React.FC<Props> = (props) => {
       if (valueRef.current !== value) {
         const model = e.getModel();
         model?.setValue(valueRef.current || '');
+      }
+      if (outerEditor) {
+        outerEditor.current = editor.current;
       }
       setLoading(false);
     });
@@ -64,5 +72,12 @@ const Editor: React.FC<Props> = (props) => {
     />
   );
 };
+
+const useEditor = (): [React.MutableRefObject<monaco.editor.IStandaloneCodeEditor | undefined>] => {
+  const editor = useRef<monaco.editor.IStandaloneCodeEditor>();
+  return [editor];
+};
+
+Editor.useEditor = useEditor;
 
 export default Editor;
