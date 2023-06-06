@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { create } from './monaco';
+import { observerElement } from './util/observer';
 import { monaco } from '@/types';
 
 interface Props {
@@ -9,6 +10,7 @@ interface Props {
   height?: string;
   onChange?: (value: string, event: monaco.editor.IModelContentChangedEvent) => void;
   editor?: React.MutableRefObject<monaco.editor.IStandaloneCodeEditor | undefined>;
+  resize?: boolean;
 }
 
 interface Other {
@@ -16,12 +18,13 @@ interface Other {
 }
 
 const Editor: React.FC<Props> & Other = (props) => {
-  const { options, width, height, onChange, value, editor: outerEditor } = props;
+  const { options, width, height, onChange, value, editor: outerEditor, resize } = props;
   const [loading, setLoading] = useState(true);
   const container = useRef<HTMLDivElement>(null);
   const subscription = useRef<monaco.IDisposable | null>(null);
   const editor = useRef<monaco.editor.IStandaloneCodeEditor>();
   const valueRef = useRef<string | undefined>('');
+  const observerRef = useRef<ReturnType<typeof observerElement>>();
 
   useEffect(() => {
     create(container.current!, {
@@ -42,9 +45,16 @@ const Editor: React.FC<Props> & Other = (props) => {
       setLoading(false);
     });
 
+    if (resize) {
+      observerRef.current = observerElement(container.current as Element, () => {
+        editor.current?.layout();
+      });
+    }
+
     return () => {
       editor.current?.dispose();
       subscription.current?.dispose();
+      observerRef.current?.dispose();
     };
   }, []);
 
@@ -69,7 +79,8 @@ const Editor: React.FC<Props> & Other = (props) => {
         height: height || '100%',
       }}
       ref={container}
-    />
+    >
+    </div>
   );
 };
 
