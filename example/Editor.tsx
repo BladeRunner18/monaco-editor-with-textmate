@@ -10,6 +10,7 @@ function App({ value }) {
       options={{ language: 'typescript', theme: 'vs-dark' }}
       value={value}
       height="500px"
+      resize
     />
   );
 }

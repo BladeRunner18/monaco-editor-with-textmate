@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { create } from './monaco';
+import { observerElement } from './util/observer';
 import { monaco } from '@/types';
 
 interface Props {
@@ -8,15 +9,22 @@ interface Props {
   width?: string;
   height?: string;
   onChange?: (value: string, event: monaco.editor.IModelContentChangedEvent) => void;
+  editor?: React.MutableRefObject<monaco.editor.IStandaloneCodeEditor | undefined>;
+  resize?: boolean;
 }
 
-const Editor: React.FC<Props> = (props) => {
-  const { options, width, height, onChange, value } = props;
+interface Other {
+  useEditor?: () => [React.MutableRefObject<monaco.editor.IStandaloneCodeEditor | undefined>];
+}
+
+const Editor: React.FC<Props> & Other = (props) => {
+  const { options, width, height, onChange, value, editor: outerEditor, resize } = props;
   const [loading, setLoading] = useState(true);
   const container = useRef<HTMLDivElement>(null);
   const subscription = useRef<monaco.IDisposable | null>(null);
   const editor = useRef<monaco.editor.IStandaloneCodeEditor>();
   const valueRef = useRef<string | undefined>('');
+  const observerRef = useRef<ReturnType<typeof observerElement>>();
 
   useEffect(() => {
     create(container.current!, {
@@ -31,12 +39,22 @@ const Editor: React.FC<Props> = (props) => {
         const model = e.getModel();
         model?.setValue(valueRef.current || '');
       }
+      if (outerEditor) {
+        outerEditor.current = editor.current;
+      }
       setLoading(false);
     });
+
+    if (resize) {
+      observerRef.current = observerElement(container.current as Element, () => {
+        editor.current?.layout();
+      });
+    }
 
     return () => {
       editor.current?.dispose();
       subscription.current?.dispose();
+      observerRef.current?.dispose();
     };
   }, []);
 
@@ -61,8 +79,16 @@ const Editor: React.FC<Props> = (props) => {
         height: height || '100%',
       }}
       ref={container}
-    />
+    >
+    </div>
   );
 };
+
+const useEditor = (): [React.MutableRefObject<monaco.editor.IStandaloneCodeEditor | undefined>] => {
+  const editor = useRef<monaco.editor.IStandaloneCodeEditor>();
+  return [editor];
+};
+
+Editor.useEditor = useEditor;
 
 export default Editor;
